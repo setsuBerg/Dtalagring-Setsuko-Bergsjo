@@ -1,3 +1,7 @@
 <Solution>
+  <Project Path="CourseApp.Application/CourseApp.Application.csproj" />
+  <Project Path="CourseApp.Domain/CourseApp.Domain.csproj" />
+  <Project Path="CourseApp.Infrastructure/CourseApp.Infrastructure.csproj" />
   <Project Path="CourseApp.Presentation/CourseApp.Presentation.csproj" />
+  <Project Path="CourseApp.Tests/CourseApp.Tests.csproj" />
 </Solution>
