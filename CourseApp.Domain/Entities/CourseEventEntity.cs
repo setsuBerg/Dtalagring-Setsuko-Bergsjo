@@ -1,6 +1,6 @@
 ﻿namespace CourseApp.Domain.Entities;
 
-public class CourseEvent
+public class CourseEventEntity
 {
     public Guid Id { get; set; }
     public DateTime StartDate { get; set; }
