@@ -1,6 +1,6 @@
 ﻿namespace CourseApp.Domain.Entities;
 
-public class Teaching
+public class TeachingEntity
 {
     public Guid Id { get; set; }
     public Guid TeacherId { get; set; }
