@@ -1,5 +1,6 @@
 ﻿using CourseApp.Application.Contracts;
 using CourseApp.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace CourseApp.Infrastructure.Data.Repositories;
 
@@ -30,25 +31,49 @@ public class StudentRepository : IStudentRepository
         
     }
 
-    public Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken)
+    public Task DeleteAsync(Guid id, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }
 
-    public Task<IReadOnlyList<StudentEntity>> GetAllAsync(CancellationToken cancellationToken)
+
+
+
+    public async Task<IReadOnlyList<StudentEntity>> GetAllAsync(CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var entities = await _context.Students
+            .AsNoTracking()
+            .OrderBy(e => e.LastName)
+            .ThenBy(e => e.FirstName)
+            .ToListAsync(cancellationToken);
+        return entities;
     }
 
-    public Task<StudentEntity?> GetByEmailAsync(string email, CancellationToken cancellationToken)
+    public async Task<StudentEntity?> GetByEmailAsync(string email, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        if (string.IsNullOrWhiteSpace(email))
+            throw new ArgumentNullException(nameof(email));
+
+        var student = await _context.Students
+            .AsNoTracking()
+            .SingleOrDefaultAsync(e => e.Email == email, cancellationToken);
+
+        return student;
     }
 
-    public Task<StudentEntity?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    public async Task<StudentEntity?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        if (id == Guid.Empty)
+            throw new ArgumentNullException("Id is required.", nameof(id));
+
+        var student = await _context.Students
+            .AsNoTracking()
+            .SingleOrDefaultAsync(e => e.Id == id, cancellationToken);
+
+        return student;
     }
+
+
 
     public Task UpdateAsync(StudentEntity student, CancellationToken cancellationToken)
     {

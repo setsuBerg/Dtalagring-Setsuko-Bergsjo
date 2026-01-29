@@ -9,5 +9,5 @@ public interface IStudentRepository
     Task<StudentEntity?> GetByEmailAsync(string email, CancellationToken cancellationToken);
     Task<IReadOnlyList<StudentEntity>> GetAllAsync(CancellationToken cancellationToken);
     Task UpdateAsync(StudentEntity student, CancellationToken cancellationToken);
-    Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken);
+    Task DeleteAsync(Guid id, CancellationToken cancellationToken);
 }
