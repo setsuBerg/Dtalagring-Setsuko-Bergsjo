@@ -8,5 +8,7 @@ public class CourseEventEntity
     public int MaxSeats { get; set; }
     public int CourseId { get; set; }
     public int CityId { get; set; }
+    public virtual ICollection<CourseRegistrationEntity> CourseRegistrations { get; set; } = [];
 
+    public virtual ICollection<TeachingEntity> Teachings { get; set; } = [];
 }

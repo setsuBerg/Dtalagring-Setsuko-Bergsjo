@@ -4,6 +4,7 @@ using CourseApp.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CourseApp.Infrastructure.Migrations
 {
     [DbContext(typeof(CourseAppDbContext))]
-    partial class CourseAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260128211356_AddKopplingTabels")]
+    partial class AddKopplingTabels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -88,9 +91,6 @@ namespace CourseApp.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("CourseEventEntityId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid>("CourseEventId")
                         .HasColumnType("uniqueidentifier");
 
@@ -101,17 +101,10 @@ namespace CourseApp.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("StudentEntityId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid>("StudentId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CourseEventEntityId");
-
-                    b.HasIndex("StudentEntityId");
 
                     b.ToTable("CourseRegistrations");
                 });
@@ -191,13 +184,7 @@ namespace CourseApp.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("CourseEventEntityId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid>("CourseEventId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("TeacherEntityId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("TeacherId")
@@ -205,50 +192,7 @@ namespace CourseApp.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CourseEventEntityId");
-
-                    b.HasIndex("TeacherEntityId");
-
                     b.ToTable("Teachings");
-                });
-
-            modelBuilder.Entity("CourseApp.Domain.Entities.CourseRegistrationEntity", b =>
-                {
-                    b.HasOne("CourseApp.Domain.Entities.CourseEventEntity", null)
-                        .WithMany("CourseRegistrations")
-                        .HasForeignKey("CourseEventEntityId");
-
-                    b.HasOne("CourseApp.Domain.Entities.StudentEntity", null)
-                        .WithMany("CourseRegistrations")
-                        .HasForeignKey("StudentEntityId");
-                });
-
-            modelBuilder.Entity("CourseApp.Domain.Entities.TeachingEntity", b =>
-                {
-                    b.HasOne("CourseApp.Domain.Entities.CourseEventEntity", null)
-                        .WithMany("Teachings")
-                        .HasForeignKey("CourseEventEntityId");
-
-                    b.HasOne("CourseApp.Domain.Entities.TeacherEntity", null)
-                        .WithMany("Teachings")
-                        .HasForeignKey("TeacherEntityId");
-                });
-
-            modelBuilder.Entity("CourseApp.Domain.Entities.CourseEventEntity", b =>
-                {
-                    b.Navigation("CourseRegistrations");
-
-                    b.Navigation("Teachings");
-                });
-
-            modelBuilder.Entity("CourseApp.Domain.Entities.StudentEntity", b =>
-                {
-                    b.Navigation("CourseRegistrations");
-                });
-
-            modelBuilder.Entity("CourseApp.Domain.Entities.TeacherEntity", b =>
-                {
-                    b.Navigation("Teachings");
                 });
 #pragma warning restore 612, 618
         }

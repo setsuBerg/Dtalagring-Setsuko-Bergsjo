@@ -9,6 +9,10 @@ public sealed class CourseAppDbContext(DbContextOptions<CourseAppDbContext> opti
     public DbSet<CourseEntity> Courses => Set<CourseEntity>();
     public DbSet<CourseEventEntity> courseEvents => Set<CourseEventEntity>();
 
+    public DbSet<CourseRegistrationEntity> CourseRegistrations => Set<CourseRegistrationEntity>();
+    public DbSet<CityEntity> Cities => Set<CityEntity>();
+    public DbSet<TeacherEntity> Teachers => Set<TeacherEntity>();
+    public DbSet<TeachingEntity> Teachings => Set<TeachingEntity>();
 
     //data context del ---> registrera den i program.cs
     protected override void OnModelCreating(ModelBuilder modelBuilder) 
@@ -44,6 +48,12 @@ public sealed class CourseAppDbContext(DbContextOptions<CourseAppDbContext> opti
             entity.HasIndex(e => e.Email, "UQ_Students_Email").IsUnique();
             entity.ToTable(tb => tb.HasCheckConstraint("CK_Students_Email_NotEmpty", "LTRIM(RTRIM([Email])) <> ''"));
 
+        });
+
+        modelBuilder.Entity<StudentEntity>(entity =>
+        {
+            entity.ToTable("Students");
+            entity.HasKey(e => e.Id).HasName("PK_Student_Id");
         });
     }
 }

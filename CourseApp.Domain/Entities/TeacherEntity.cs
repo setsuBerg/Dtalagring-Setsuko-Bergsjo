@@ -8,4 +8,5 @@ public class TeacherEntity
 
     public string Email { get; set; } = null!;
     public string Expertise { get; set; } = null!;
+    public virtual ICollection<TeachingEntity> Teachings { get; set; } = [];
 }
