@@ -17,7 +17,7 @@ public class StudentRepository : IStudentRepository
         //Mappning CreateStudentDTO to StudentEntity, inte använd automappar, automappar är lätt
         var entity = new StudentEntity
         {
-            Id = student.Id,
+            Id = Guid.NewGuid(),
             FirstName = student.FirstName,
             LastName = student.LastName,
             Email = student.Email,
