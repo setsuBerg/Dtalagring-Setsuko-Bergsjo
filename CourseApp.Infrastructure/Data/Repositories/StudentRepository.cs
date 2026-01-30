@@ -55,8 +55,9 @@ public class StudentRepository : IStudentRepository
             throw new ArgumentNullException(nameof(email));
 
         var student = await _context.Students
+            .Where(e => e.Email == email)
             .AsNoTracking()
-            .SingleOrDefaultAsync(e => e.Email == email, cancellationToken);
+            .SingleOrDefaultAsync(cancellationToken);
 
         return student;
     }
@@ -67,8 +68,9 @@ public class StudentRepository : IStudentRepository
             throw new ArgumentNullException("Id is required.", nameof(id));
 
         var student = await _context.Students
+            .Where(e => e.Id == id)
             .AsNoTracking()
-            .SingleOrDefaultAsync(e => e.Id == id, cancellationToken);
+            .SingleOrDefaultAsync(cancellationToken);
 
         return student;
     }

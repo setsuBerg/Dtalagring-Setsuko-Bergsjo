@@ -22,4 +22,10 @@ var app = builder.Build();
 app.MapOpenApi();
 app.UseHttpsRedirection();
 
+app.MapGet("/students", async (IStudentRepository repo, CancellationToken ct) =>
+{
+    var students = await repo.GetAllAsync(ct);
+    return Results.Ok(students);
+});
+
 app.Run();
