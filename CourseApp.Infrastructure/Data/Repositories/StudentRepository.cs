@@ -27,16 +27,22 @@ public class StudentRepository : IStudentRepository
         //Save to database
         _context.Students.Add(entity);
         await _context.SaveChangesAsync(cancellationToken);
-
-        
+   
     }
 
-    public Task DeleteAsync(Guid id, CancellationToken cancellationToken)
+    public async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        if (id == Guid.Empty)
+        throw new ArgumentException("Id is required.", nameof(id));
+
+        var entity = await _context.Students.SingleOrDefaultAsync(e => e.Id == id, cancellationToken);
+        
+        if (entity is null)
+            throw new KeyNotFoundException($"Student '{id}' not found.");
+
+        _context.Students.Remove(entity);
+        await _context.SaveChangesAsync(cancellationToken);
     }
-
-
 
 
     public async Task<IReadOnlyList<StudentEntity>> GetAllAsync(CancellationToken cancellationToken)
@@ -76,9 +82,22 @@ public class StudentRepository : IStudentRepository
     }
 
 
-
-    public Task UpdateAsync(StudentEntity student, CancellationToken cancellationToken)
+    public async Task UpdateAsync(StudentEntity student, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        if (student.Id == Guid.Empty)
+            throw new ArgumentException("Id is required.", nameof(student));
+
+        var entity = await _context.Students.SingleOrDefaultAsync(e => e.Id == student.Id, cancellationToken);
+
+        if (entity is null)
+            throw new KeyNotFoundException($"Student '{student.Id}' not found.");
+
+        entity.FirstName = student.FirstName;
+        entity.LastName = student.LastName;
+        entity.Email = student.Email;
+        entity.PhoneNumber = student.PhoneNumber;
+
+        await _context.SaveChangesAsync(cancellationToken);
+
     }
 }
