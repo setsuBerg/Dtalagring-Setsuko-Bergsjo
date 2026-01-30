@@ -1,4 +1,5 @@
 using CourseApp.Application.Contracts;
+using CourseApp.Domain.Entities;
 using CourseApp.Infrastructure.Data;
 using CourseApp.Infrastructure.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -20,12 +21,19 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 
 app.MapOpenApi();
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.MapGet("/students", async (IStudentRepository repo, CancellationToken ct) =>
 {
     var students = await repo.GetAllAsync(ct);
     return Results.Ok(students);
+});
+
+// Endpoint to create a new student
+app.MapPost("/students", async (StudentEntity student, IStudentRepository repo, CancellationToken ct) =>
+{
+    await repo.CreateAsync(student, ct);
+    return Results.Created($"/students/{student.Id}", student);
 });
 
 app.Run();
