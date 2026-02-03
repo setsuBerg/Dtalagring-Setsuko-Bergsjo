@@ -1,4 +1,5 @@
 using CourseApp.Application.Contracts;
+using CourseApp.Application.Dtos;
 using CourseApp.Domain.Entities;
 using CourseApp.Infrastructure.Data;
 using CourseApp.Infrastructure.Data.Repositories;
@@ -26,25 +27,68 @@ app.UseHttpsRedirection();
 app.MapGet("/students", async (IStudentRepository repo, CancellationToken ct) =>
 {
     var students = await repo.GetAllAsync(ct);
-    return Results.Ok(students);
+
+    var result = students.Select(s => new StudentResponseDto(s.Id, s.FirstName, s.LastName, s.Email));
+
+    return Results.Ok(result);
 });
 
 // get student by ID
-app.MapGet("/students/{id.guid}", async (Guid id, IStudentRepository repo, CancellationToken ct) =>
+app.MapGet("/students/{id:guid}", async (Guid id, IStudentRepository repo, CancellationToken ct) =>
 {
     var student = await repo.GetByIdAsync(id, ct);
-    return student is null ? Results.NotFound() : Results.Ok(student);
+
+    if (student is null)
+        return Results.NotFound();
+
+    var response = new StudentResponseDto(student.Id, student.FirstName, student.LastName, student.Email);
+
+    return Results.Ok(response);
 });
 
 // create a new student
-app.MapPost("/students", async (StudentEntity student, IStudentRepository repo, CancellationToken ct) =>
+app.MapPost("/students", async (StudentCreateDto dto, IStudentRepository repo, CancellationToken ct) =>
 {
+    var student = new StudentEntity
+    {
+        FirstName = dto.FirstName,
+        LastName = dto.LastName,
+        Email = dto.Email,
+        PhoneNumber = dto.PhoneNumber,
+        DateOfBirth = dto.DateOfBirth
+    };
+
     await repo.CreateAsync(student, ct);
+
     var createdStudent = await repo.GetByEmailAsync(student.Email, ct);
+
     if (createdStudent == null)
         return Results.BadRequest("Student could not be created.");
 
-    return Results.Created($"/students/{createdStudent.Id}", createdStudent);
+    var response = new StudentResponseDto(createdStudent.Id, createdStudent.FirstName, createdStudent.LastName, createdStudent.Email);
+    return Results.Created($"/students/{response.Id}", response);
+});
+
+// Endpoint to update a student
+app.MapPut("/students/{id:guid}", async (
+    Guid id,
+    StudentUpdateDto dto,
+    IStudentRepository repo,
+    CancellationToken ct) =>
+{
+    var entity = await repo.GetByIdAsync(id, ct);
+    if (entity is null)
+        return Results.NotFound();
+
+        entity.FirstName = dto.FirstName;
+        entity.LastName = dto.LastName;
+        entity.Email = dto.Email;
+        entity.PhoneNumber = dto.PhoneNumber;
+        entity.DateOfBirth = dto.DateOfBirth;
+
+        var response = new StudentResponseDto(entity.Id, entity.FirstName, entity.LastName, entity.Email);
+
+        return Results.Ok(response);
 });
 
 // Endpoint to delete a student by ID
