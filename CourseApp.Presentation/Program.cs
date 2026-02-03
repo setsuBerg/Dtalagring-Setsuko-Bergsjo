@@ -55,7 +55,8 @@ app.MapPost("/students", async (StudentCreateDto dto, IStudentRepository repo, C
         LastName = dto.LastName,
         Email = dto.Email,
         PhoneNumber = dto.PhoneNumber,
-        DateOfBirth = dto.DateOfBirth
+        DateOfBirth = dto.DateOfBirth?.ToDateTime(TimeOnly.MinValue)
+
     };
 
     await repo.CreateAsync(student, ct);
@@ -84,7 +85,7 @@ app.MapPut("/students/{id:guid}", async (
         entity.LastName = dto.LastName;
         entity.Email = dto.Email;
         entity.PhoneNumber = dto.PhoneNumber;
-        entity.DateOfBirth = dto.DateOfBirth;
+        entity.DateOfBirth = dto.DateOfBirth?.ToDateTime(TimeOnly.MinValue);
 
         var response = new StudentResponseDto(entity.Id, entity.FirstName, entity.LastName, entity.Email);
 
