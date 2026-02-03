@@ -8,7 +8,7 @@ public class StudentEntity
 
     public string Email { get; set; } = null!;
     public string? PhoneNumber { get; set; }
-    public DateTime DateOfBirth { get; set; }
+    public DateOnly? DateOfBirth { get; set; }
 
     public ICollection<CourseRegistrationEntity> CourseRegistrations { get; set; } = [];
 }
