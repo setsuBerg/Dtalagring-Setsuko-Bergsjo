@@ -22,12 +22,12 @@ public class StudentRepository : IStudentRepository
             LastName = student.LastName,
             Email = student.Email,
             PhoneNumber = student.PhoneNumber,
+            DateOfBirth = student.DateOfBirth
         };
 
         //Save to database
         _context.Students.Add(entity);
         await _context.SaveChangesAsync(cancellationToken);
-   
     }
 
     public async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
@@ -81,7 +81,6 @@ public class StudentRepository : IStudentRepository
         return student;
     }
 
-
     public async Task UpdateAsync(StudentEntity student, CancellationToken cancellationToken)
     {
         if (student.Id == Guid.Empty)
@@ -98,6 +97,5 @@ public class StudentRepository : IStudentRepository
         entity.PhoneNumber = student.PhoneNumber;
 
         await _context.SaveChangesAsync(cancellationToken);
-
     }
 }
