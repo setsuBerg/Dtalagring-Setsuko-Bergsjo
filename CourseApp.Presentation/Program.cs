@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors();
+
 builder.Services.AddOpenApi();
 
 //databasens namen angers här
@@ -23,12 +25,13 @@ var app = builder.Build();
 
 app.MapOpenApi();
 app.UseHttpsRedirection();
+app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
 app.MapGet("/students", async (IStudentRepository repo, CancellationToken ct) =>
 {
     var students = await repo.GetAllAsync(ct);
 
-    var result = students.Select(s => new StudentResponseDto(s.Id, s.FirstName, s.LastName, s.Email));
+    var result = students.Select(s => new StudentResponseDto(s.Id, s.FirstName, s.LastName, s.Email, s.PhoneNumber, s.DateOfBirth));
 
     return Results.Ok(result);
 });
@@ -36,12 +39,12 @@ app.MapGet("/students", async (IStudentRepository repo, CancellationToken ct) =>
 // get student by ID
 app.MapGet("/students/{id:guid}", async (Guid id, IStudentRepository repo, CancellationToken ct) =>
 {
-    var student = await repo.GetByIdAsync(id, ct);
+    var s = await repo.GetByIdAsync(id, ct);
 
-    if (student is null)
+    if (s is null)
         return Results.NotFound();
 
-    var response = new StudentResponseDto(student.Id, student.FirstName, student.LastName, student.Email);
+    var response = new StudentResponseDto(s.Id, s.FirstName, s.LastName, s.Email, s.PhoneNumber, s.DateOfBirth);
 
     return Results.Ok(response);
 });
@@ -55,8 +58,7 @@ app.MapPost("/students", async (StudentCreateDto dto, IStudentRepository repo, C
         LastName = dto.LastName,
         Email = dto.Email,
         PhoneNumber = dto.PhoneNumber,
-        DateOfBirth = dto.DateOfBirth?.ToDateTime(TimeOnly.MinValue)
-
+        DateOfBirth = dto.DateOfBirth
     };
 
     await repo.CreateAsync(student, ct);
@@ -66,7 +68,7 @@ app.MapPost("/students", async (StudentCreateDto dto, IStudentRepository repo, C
     if (createdStudent == null)
         return Results.BadRequest("Student could not be created.");
 
-    var response = new StudentResponseDto(createdStudent.Id, createdStudent.FirstName, createdStudent.LastName, createdStudent.Email);
+    var response = new StudentResponseDto(createdStudent.Id, createdStudent.FirstName, createdStudent.LastName, createdStudent.Email, createdStudent.PhoneNumber, createdStudent.DateOfBirth);
     return Results.Created($"/students/{response.Id}", response);
 });
 
@@ -85,9 +87,11 @@ app.MapPut("/students/{id:guid}", async (
         entity.LastName = dto.LastName;
         entity.Email = dto.Email;
         entity.PhoneNumber = dto.PhoneNumber;
-        entity.DateOfBirth = dto.DateOfBirth?.ToDateTime(TimeOnly.MinValue);
+        entity.DateOfBirth = dto.DateOfBirth;
 
-        var response = new StudentResponseDto(entity.Id, entity.FirstName, entity.LastName, entity.Email);
+        await repo.UpdateAsync(entity, ct);
+
+        var response = new StudentResponseDto(entity.Id, entity.FirstName, entity.LastName, entity.Email, entity.PhoneNumber, entity.DateOfBirth);
 
         return Results.Ok(response);
 });
@@ -104,7 +108,6 @@ app.MapDelete("/students/{id:guid}", async (Guid id, IStudentRepository repo, Ca
     {
         return Results.NotFound();
     }
-
 });
 
 app.Run();
