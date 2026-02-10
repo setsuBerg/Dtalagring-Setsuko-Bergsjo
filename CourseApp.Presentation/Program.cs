@@ -111,3 +111,5 @@ app.MapDelete("/students/{id:guid}", async (Guid id, IStudentRepository repo, Ca
 });
 
 app.Run();
+
+public partial class Program { }
