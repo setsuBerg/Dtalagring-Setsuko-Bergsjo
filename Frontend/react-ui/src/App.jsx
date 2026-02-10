@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react"
+
 function App() {
-  const [students, setStudents] = useState([]);
+
+    const [students, setStudents] = useState([]);
 
     useEffect(() => {
         fetch("https://localhost:7068/students")
@@ -14,6 +16,35 @@ function App() {
     const [email, setEmail] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
     const [dateOfBirth, setDateOfBirth] = useState("");
+    
+
+    //Put version
+    const handleAdd = async () => { 
+        const newStudent = {
+            firstName,
+            lastName,
+            email,
+            phoneNumber,
+            dateOfBirth
+        };
+        const response = await fetch("https://localhost:7068/students", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(newStudent)
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            setStudents([...students, data]);
+        }
+
+        setFirstName("");
+        setLastName("");
+        setEmail("");
+        setPhoneNumber("");
+        setDateOfBirth("");
+
+    };
 
     return (
         <>
@@ -33,6 +64,8 @@ function App() {
             <div>
                 <input type="date" placeholder="Date of Birth" value={dateOfBirth} onChange={(e) => setDateOfBirth(e.target.value)} />
             </div>
+
+            <button type="button" onClick={handleAdd}>Add Student</button>
             
 
             <h3>Student List</h3>
