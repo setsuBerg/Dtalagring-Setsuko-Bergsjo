@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using Microsoft.AspNetCore.Mvc.Testing;
 
-namespace CourseApp.Tests;
+namespace CourseApp.Tests.Integration;
 
 public class StudentsApiTests : IClassFixture<WebApplicationFactory<Program>>
 {
