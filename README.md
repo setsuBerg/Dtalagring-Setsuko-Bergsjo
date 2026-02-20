@@ -29,10 +29,10 @@ The database is designed using ERD(crow's foot notation), normalization principl
 ### Tools
 - Git & GitHub
 - Visual Studio
+- Visual Studio Code
 - SQL Server Management Studio (SSMS)
 
-The project focuses primarily on backend functionality and database integration. While full CRUD functionality is implemented in the API, 
+The project focuses primarily on backend functionality and database integration. 
+While full CRUD functionality is implemented in the API, 
 the frontend currently supports viewing and creating students. 
 Extending full CRUD support in the UI is planned as future work.
-
-Setsuko Bergsjo
